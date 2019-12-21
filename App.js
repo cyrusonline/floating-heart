@@ -1,10 +1,14 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View , TouchableOpacity, Animated} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View , TouchableOpacity, Animated, Dimensions, Easing} from 'react-native';
 import {AntDesign} from '@expo/vector-icons'
+const {height} = Dimensions.get('window')
+const animationEndY = Math.ceil(height*0.7)
+const negativeEndY = animationEndY * -1
 let heartCount = 1
 export default function App() {
  
   const [hearts, setHearts] = useState([])
+  // const [position, setPosition] = useState(new Animated.Value(0))
   const getRandomNumber = (min,max) => {
     return Math.random()*(max-min)+min
   }
@@ -32,11 +36,31 @@ const Heart = props => (
   </View>
 )
 
-const HeartContainer  = props=> (
+const HeartContainer  = props=> {
+  const position = new Animated.Value(0)
+  const yAnimation = position.interpolate({
+    inputRange: [negativeEndY,0],
+    outputRange: [animationEndY,0]
+  })
+  useEffect(()=>{
+
+    Animated.timing(position,{
+      duration:2000,
+      toValue:negativeEndY,
+      easing:Easing.ease,
+      useNativeDriver:true
+    }).start()
+  },[])
+  // useEffect(
+ 
+  //   ,
+  // [])
+  return(
+  
   <Animated.View style={[styles.heartContainer], props.style}>
   <Heart color="red"/>
   </Animated.View>
-)
+)}
 
 
 const styles = StyleSheet.create({
